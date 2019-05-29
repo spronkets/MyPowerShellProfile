@@ -5,6 +5,7 @@
 Modules/
 Scripts/
 PrivateModules/*
+!PrivateModules/.gitkeep
 
 # System Files
 .DS_Store
