@@ -1,0 +1,11 @@
+# IDE - VS Code
+.vscode/
+
+# PowerShell Folders
+Modules/
+Scripts/
+PrivateModules/*
+
+# System Files
+.DS_Store
+Thumbs.db
