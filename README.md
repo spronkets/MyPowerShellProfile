@@ -1,6 +1,21 @@
 # OpenPowerShellProfile
 This is my PowerShell Profile, open-sourced primarily for my own re-use and potentially be of some help to others.
 
+### Cloning
+1. Open PowerShell
+2. Navigate to your Documents folder
+3. Rename, move, or delete your existing WindowsPowerShell folder
+4. Clone this repository into the Documents folder using your preferred Git toolset
+
+Ex:
+```PowerShell
+%UserProfile%\Documents > git clone https://github.com/kcrossman/OpenPowerShellProfile.git WindowsPowerShell
+```
+
+5. If you renamed or moved your existing WindowsPowerShell folder, migrate your desired commands/functionality into your own module(s) within the PrivateModules folder.
+
+*Note: The profile will automatically attempt to import them they are .ps[m]1 files in either the OpenModules or PrivateModules folders...*
+
 ### Basic Commands
 There will be a few basic commands within the profile itself. These may belong in another module., but haven't been moved yet.
 
