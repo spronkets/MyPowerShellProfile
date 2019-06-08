@@ -1,6 +1,9 @@
 # OpenPowerShellProfile
 This is my PowerShell Profile, open-sourced primarily for my own re-use and potentially be of some help to others.
 
+### Basic Commands
+There will be a few basic commands within the profile itself. These may belong in another module., but haven't been moved yet.
+
 `vs`
 Opens the first .sln file found with Visual Studio.
 
@@ -22,6 +25,18 @@ Installed Modules/Scripts aren't included in this repository. Run the following 
 # Posh-Git - https://github.com/dahlbyk/posh-git
 Install-Module posh-git # Update-Module posh-git
 ```
+
+### AngularModule
+TODO
+
+### ChocolateyModule
+TODO
+
+### DockerModule
+TODO
+
+### DotnetModule
+TODO
 
 ### GitModule
 This module provides some extended Git functionality.
@@ -50,9 +65,5 @@ Creates a branch with the bugfix, feature, release, hotfix paradigm with just th
 `push`
 Pushes the current branch given a message to origin. Won't commit .json or .config files automatically, must pass with `-allowConfigs`. Also won't push directly to a develop/master branch without `-override`. Ex: `push 'my new stuff' -ac -o`.
 
-### DotnetModule
-
-### ChocolateyModule
-
 ## PrivateModules
-Custom Modules that will automatically be imported. Modules intended to be used for work, personal projects, etc.
+Custom Modules that will automatically be imported but not checked in to this repository. This is intended for Modules to enhance personal projects, work, etc.
