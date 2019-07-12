@@ -1,9 +1,9 @@
-function Install-AngularCLI {
-    & npm install -g @angular/cli
+function Update-NodePackageManager {
+    & npm i -g npm@latest
 }
 
-function Update-NodePackageManager {
-    & npm i -g npm
+function Update-AngularCli {
+    & npm install -g @angular/cli@latest
 }
 
 function New-AngularApp([string]$appName) {
