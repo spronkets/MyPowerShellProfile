@@ -28,6 +28,8 @@ function drn {
 
 function Invoke-MsBuildForProject([string]$projectPath, [string]$config = "Debug") {
     Write-Host "Building '$projectPath'..." -ForegroundColor White
+    msbuild $projectPath /t:Clean /m /p:Configuration=$config
+    nuget restore $projectPath -NoCache
     msbuild $projectPath /t:ReBuild /m /p:Configuration=$config
     if (! $?) {
         $ErrorMsg = ($_ | Out-String);
