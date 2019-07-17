@@ -63,3 +63,9 @@ $user = [Environment]::UserName
 
 Write-Host "Welcome PowerShell Master, $user." -ForegroundColor Gray
 Write-Host
+
+# Chocolatey profile
+$ChocolateyProfile = "$env:ChocolateyInstall\helpers\chocolateyProfile.psm1"
+if (Test-Path($ChocolateyProfile)) {
+  Import-Module "$ChocolateyProfile"
+}
