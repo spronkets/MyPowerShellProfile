@@ -8,11 +8,59 @@ function gite {
     & 'C:/Program Files (x86)/GitExtensions/GitExtensions.exe' 
 }
 
+# Helper Functions
+function Test-DirectoryIsGitRepository {
+    [boolean]$isGitRepository = git rev-parse --is-inside-work-tree 2>/dev/null
+    return $isGitRepository
+}
+
+function Get-GitBranchName {
+    $isGitRepository = Test-DirectoryIsGitRepository
+    if ($isGitRepository) {
+        $branchName = (& git rev-parse --abbrev-ref HEAD).Trim()
+        Write-Host "Branch Name: $branchName" -ForegroundColor Gray
+        return $branchName
+    }
+    return $null
+}
+
+function Get-GitLastRemoteHash {
+    $branchName = Get-GitBranchName
+    if ($branchName) {
+        $lastRemoteHash = git rev-parse origin/$branchName
+        Write-Host "Last Remote Hash: $lastRemoteHash" -ForegroundColor Gray
+        return $lastRemoteHash
+    }
+    return $null
+}
+
+function git-merge {
+    param (
+        [alias("b")]
+        [string] $branchName
+    )
+
+    if (!$branchName) {
+        $branchName = Get-GitBranchName
+    }
+
+    if ($branchName) {
+        & git pull origin $branchName
+    }
+    else {
+        throw [System.ArgumentException] "Can't merge a non-branch!"
+    }
+}
+
 function git-reset {
-    & git fetch
-    & git reset --hard HEAD~1
-    & git clean -d -f
-    & git pull
+    $lastRemoteHash = Get-GitLastRemoteHash
+    if ($lastRemoteHash) {
+        & git fetch
+        & git reset --hard $lastRemoteHash
+    }
+    else {
+        throw [System.ArgumentException] "Can't reset a non-branch!"
+    }
 }
 
 function pull {
@@ -22,7 +70,7 @@ function pull {
     )
 	
     if (![string]::IsNullOrEmpty($branchName)) {
-        & git pull origin $branchName
+        & git-merge $branchName
     }
     else {
         & git pull
@@ -42,7 +90,7 @@ function pull-all {
             Set-Location $path.FullName
             if (& git rev-parse --is-inside-git-dir) {
                 Write-Host "Getting latest... " -ForegroundColor Green
-                & pull
+                & git pull
             }
             else {
                 Write-Host "This is not a Git Repository. Skipping..." -ForegroundColor Yellow
@@ -80,8 +128,8 @@ function branch {
         $branchName = "hotfix/$($branchName.Remove(0,2))"
     }
     
-    & git checkout -b $typeText$branchName
-    Write-Host "& git checkout -b $typeText$branchName"
+    & git checkout -b $branchName
+    Write-Host "& git checkout -b $branchName"
 }
 
 function push {
@@ -94,13 +142,13 @@ function push {
         [switch] $override
     )
 
-    $branch = (& git rev-parse --abbrev-ref HEAD).Trim()
+    $branchName = Get-GitBranchName
 
-    if (!$branch) {
+    if (!$branchName) {
         throw [System.ArgumentException] "Can't push to a non-branch!"
     }
 
-    if ($branch -ieq "master" -or $branch -ieq "develop") {
+    if ($branchName -ieq "master" -or $branchName -ieq "develop") {
         if ($override -eq $true) {
             Write-Host "WARNING!!! You just pushed directly to master/develop!" -ForegroundColor Yellow
         }
@@ -121,6 +169,5 @@ function push {
         & git commit --amend -m $message
     }
     
-    & git push --set-upstream origin $branch
-    Write-Host "& git push --set-upstream origin $branch" -ForegroundColor Cyan
+    & git push --set-upstream origin $branchName
 }
