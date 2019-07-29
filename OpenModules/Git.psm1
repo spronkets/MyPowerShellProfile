@@ -56,6 +56,7 @@ function git-reset {
     $lastRemoteHash = Get-GitLastRemoteHash
     if ($lastRemoteHash) {
         & git fetch
+        & git clean -d -f
         & git reset --hard $lastRemoteHash
     }
     else {
