@@ -10,7 +10,7 @@ function gite {
 
 # Helper Functions
 function Test-DirectoryIsGitRepository {
-  [boolean]$isGitRepository = git rev-parse --is-inside-work-tree 2>/dev/null
+  [boolean]$isGitRepository = git rev-parse --is-inside-work-tree
   return $isGitRepository
 }
 
