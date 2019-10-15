@@ -1,4 +1,4 @@
-# OpenPowerShellProfile
+# MyPowerShellProfile
 This is my PowerShell Profile, open-sourced primarily for my own re-use and potentially be of some help to others.
 
 ### Cloning
@@ -9,7 +9,7 @@ This is my PowerShell Profile, open-sourced primarily for my own re-use and pote
 
 Ex:
 ```PowerShell
-%UserProfile%\Documents > git clone https://github.com/kcrossman/OpenPowerShellProfile.git WindowsPowerShell
+%UserProfile%\Documents > git clone https://github.com/kcrossman/MyPowerShellProfile.git WindowsPowerShell
 ```
 
 5. If you renamed or moved your existing WindowsPowerShell folder, migrate your desired commands/functionality into your own module(s) within the PrivateModules folder.
