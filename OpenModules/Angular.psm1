@@ -1,8 +1,4 @@
-function Update-NodePackageManager {
-  & npm i -g npm@latest
-}
-
-function Update-AngularCli {
+function Install-AngularCli {
   & npm install -g @angular/cli@latest
 }
 

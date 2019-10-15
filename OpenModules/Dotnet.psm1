@@ -46,9 +46,16 @@ function Stop-MsBuildProcesses {
   Write-Host " Hostiles eliminated!" -ForegroundColor Green
 }
 
-function Install-VisualStudioSpaTemplates {
-  & dotnet new -i Microsoft.AspNetCore.SpaTemplates::*
+function Install-VisualStudioTemplates {
+  & dotnet new -i Microsoft.Azure.WebJobs.ProjectTemplates
+  & dotnet new -i Microsoft.Azure.WebJobs.ItemTemplates
+  & dotnet new -i Microsoft.DotNet.Web.ProjectTemplates.2.2
+  & dotnet new -i Microsoft.DotNet.Web.ProjectTemplates.3.0
+  & dotnet new -i Microsoft.AspNetCore.SpaTemplates
+  & dotnet new -i Microsoft.DotNet.Web.Spa.ProjectTemplates.2.2
+  & dotnet new -i Microsoft.DotNet.Web.Spa.ProjectTemplates.3.0
   & dotnet new -i Microsoft.AspNetCore.Blazor.Templates
+  & dotnet new -i Microsoft.PowerShell.Standard.Module.Template
     
   # More dotnet new templates:
   # https://github.com/dotnet/templating/wiki/Available-templates-for-dotnet-new
