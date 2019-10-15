@@ -1,5 +1,5 @@
 # MyPowerShellProfile
-This is my PowerShell Profile, open-sourced primarily for my own re-use and potentially be of some help to others.
+This is my PowerShell Profile, open-sourced primarily for my own re-use and potentially be of some reference to others.
 
 ### Cloning
 1. Open PowerShell
