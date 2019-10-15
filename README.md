@@ -16,21 +16,6 @@ Ex:
 
 *Note: The profile will automatically attempt to import them they are .ps[m]1 files in either the OpenModules or PrivateModules folders...*
 
-### Basic Commands
-There will be a few basic commands within the profile itself. These may belong in another module., but haven't been moved yet.
-
-`vs`
-Opens the first .sln file found with Visual Studio.
-
-`vsc`
-Opens the current folder with Visual Studio Code.
-
-`dev`
-Opens the dev folder.
-
-`dt`
-Prints the current date in the format 'yyyyMMddHHmmss'.
-
 ## OpenModules
 Modules that are created by me to separate functionality and purpose.
 
@@ -52,6 +37,18 @@ TODO
 
 ### DotnetModule
 TODO
+
+`vs`
+Opens the first .sln file found with Visual Studio.
+
+`vsc`
+Opens the current folder with Visual Studio Code.
+
+`dev`
+Opens the dev folder.
+
+`dt`
+Prints the current date in the format 'yyyyMMddHHmmss'.
 
 ### GitModule
 This module provides some extended Git functionality.
