@@ -3,7 +3,7 @@ function Install-DockerLocalnet {
 }
 
 function Install-DockerSqlServerDb {
-  & docker run --name sqlserver --restart always -it -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=Password!2" --net localnet --ip 172.18.0.22 -p 1433:1433 -d microsoft/mssql-server-linux:2017-latest
+  & docker run --name sqlserver --restart always -it -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=Password!2" --net localnet --ip 172.18.0.22 -p 1433:1433 -d mcr.microsoft.com/mssql/server:2022-latest
 }
 
 function Install-DockerPostgresDb {
