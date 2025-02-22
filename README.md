@@ -3,16 +3,16 @@ This is my PowerShell Profile, open-sourced primarily for my own re-use and pote
 
 ### Cloning
 1. Open PowerShell
-2. Navigate to your Documents folder
-3. Rename, move, or delete your existing WindowsPowerShell folder
+2. Navigate to your Documents folder (check OneDrive first)
+3. Rename, move, or delete your existing PowerShell folder (WindowsPowerShell prior to PowerShell 7)
 4. Clone this repository into the Documents folder using your preferred Git toolset
 
 Ex:
 ```PowerShell
-%UserProfile%\Documents > git clone https://github.com/kcrossman/MyPowerShellProfile.git WindowsPowerShell
+%UserProfile%[\OneDrive]\Documents > git clone https://github.com/kcrossman/MyPowerShellProfile.git PowerShell
 ```
 
-5. If you renamed or moved your existing WindowsPowerShell folder, migrate your desired commands/functionality into your own module(s) within the PrivateModules folder.
+5. If you renamed or moved your existing PowerShell folder, migrate your desired commands/functionality into your own module(s) within the PrivateModules folder.
 
 *Note: The profile will automatically attempt to import them they are .ps[m]1 files in either the OpenModules or PrivateModules folders...*
 

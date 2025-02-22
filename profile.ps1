@@ -1,7 +1,7 @@
 # More PowerShell functionality with my Gists (https://gist.github.com/kcrossman)
 
 function Import-ModuleInternal([string]$moduleFullPath) {
-  $moduleName = [regex]::Match($moduleFullPath, "^.*[\/\\](\w+).ps[m]?1$").captures.groups[1].value
+  $moduleName = [regex]::Match($moduleFullPath, "^.*[\/\\](\w+).ps[m]?1$").Captures.Groups[1].Value
   try {
     Import-Module $moduleFullPath -DisableNameChecking -Force
     Write-Host "Imported '$moduleName'." -ForegroundColor Gray
@@ -14,8 +14,8 @@ function Import-ModuleInternal([string]$moduleFullPath) {
 function Import-ModulesInternal([string]$modulesTargetDir) {
   Write-Host "Importing '$modulesTargetDir'..."
   $modulesPath = Join-Path $PSScriptRoot $modulesTargetDir
-  Get-ChildItem $modulesPath -Recurse -Include '*.psm1', '*.ps1' | 
-  Foreach-Object {
+  Get-ChildItem $modulesPath -Recurse -Include '*.psm1', '*.ps1' |
+  ForEach-Object {
     Import-ModuleInternal $_.FullName
   }
 }
@@ -26,22 +26,21 @@ Import-ModulesInternal "PrivateModules"
 function Add-ToEnvPath {
   param(
     [Parameter(Mandatory = $true, Position = 0)]
-    [String]
-    $pathToAdd,
+    [string]$pathToAdd,
+
     [Parameter(Position = 1)]
     [ValidateSet("Machine", "User", "Session")]
-    [String]
-    $pathLocation = "Session"
+    [string]$pathLocation = "Session"
   )
 
   Write-Host "Adding location ('$pathToAdd') to $pathLocation path..." -ForegroundColor White
 
   if ($pathLocation -ne "Session") {
-    [String]$envPath = [Environment]::GetEnvironmentVariable("Path", $pathLocation)
-    [string[]]$currentEnvPath = @($envPath -split ";")
-    if ($currentEnvPath -notcontains $pathToAdd) {
-      $currentEnvPath = += $pathToAdd
+    $envPath = [Environment]::GetEnvironmentVariable("Path", $pathLocation)
+    $currentEnvPath = $envPath -split ";"
 
+    if ($currentEnvPath -notcontains $pathToAdd) {
+      $currentEnvPath += $pathToAdd
       $envPath = ($currentEnvPath -join ";") -replace ";;", ";"
       [Environment]::SetEnvironmentVariable("Path", $envPath, $pathLocation)
       Write-Host "Location added." -ForegroundColor Cyan
@@ -50,20 +49,18 @@ function Add-ToEnvPath {
       Write-Host "Location already exists." -ForegroundColor Cyan
     }
   }
-    
-  $env:Path += ";$pathLocation"
+
+  $env:Path += ";$pathToAdd"
   Write-Host "Location added to PowerShell session." -ForegroundColor Gray
 }
 
 Clear-Host
 
-$user = [Environment]::UserName
-
-Write-Host "Welcome PowerShell Master, $user." -ForegroundColor Gray
+Write-Host "Welcome to PowerShell $($PSVersionTable.PSVersion), $($env:USERNAME)." -ForegroundColor Gray
 Write-Host
 
 # Chocolatey profile
 $ChocolateyProfile = "$env:ChocolateyInstall\helpers\chocolateyProfile.psm1"
-if (Test-Path($ChocolateyProfile)) {
+if (Test-Path $ChocolateyProfile) {
   Import-Module "$ChocolateyProfile"
 }
