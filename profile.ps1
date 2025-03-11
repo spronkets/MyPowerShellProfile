@@ -23,35 +23,40 @@ function Import-ModulesInternal([string]$modulesTargetDir) {
 Import-ModulesInternal "OpenModules"
 Import-ModulesInternal "PrivateModules"
 
-function Add-ToEnvPath {
-  param(
-    [Parameter(Mandatory = $true, Position = 0)]
-    [string]$pathToAdd,
-
-    [Parameter(Position = 1)]
-    [ValidateSet("Machine", "User", "Session")]
-    [string]$pathLocation = "Session"
+function Show-Menu {
+  param (
+    [string[]]$Items
   )
 
-  Write-Host "Adding location ('$pathToAdd') to $pathLocation path..." -ForegroundColor White
+  $selectedIndex = 0
+  while ($true) {
+    Clear-Host
+    Write-Host "Multiple .sln files found. Please select one (use arrow keys and press Enter):`r`n"
 
-  if ($pathLocation -ne "Session") {
-    $envPath = [Environment]::GetEnvironmentVariable("Path", $pathLocation)
-    $currentEnvPath = $envPath -split ";"
-
-    if ($currentEnvPath -notcontains $pathToAdd) {
-      $currentEnvPath += $pathToAdd
-      $envPath = ($currentEnvPath -join ";") -replace ";;", ";"
-      [Environment]::SetEnvironmentVariable("Path", $envPath, $pathLocation)
-      Write-Host "Location added." -ForegroundColor Cyan
+    for ($i = 0; $i -lt $Items.Count; $i++) {
+      if ($i -eq $selectedIndex) {
+        Write-Host "> $($Items[$i])" -ForegroundColor Green
+      }
+      else {
+        Write-Host "  $($Items[$i])"
+      }
     }
-    else {
-      Write-Host "Location already exists." -ForegroundColor Cyan
+
+    $key = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown").VirtualKeyCode
+
+    if ($key -eq 38) {
+      # Up arrow
+      $selectedIndex = [math]::Max(0, $selectedIndex - 1)
+    }
+    elseif ($key -eq 40) {
+      # Down arrow
+      $selectedIndex = [math]::Min($Items.Count - 1, $selectedIndex + 1)
+    }
+    elseif ($key -eq 13) {
+      # Enter key
+      return $selectedIndex
     }
   }
-
-  $env:Path += ";$pathToAdd"
-  Write-Host "Location added to PowerShell session." -ForegroundColor Gray
 }
 
 Clear-Host

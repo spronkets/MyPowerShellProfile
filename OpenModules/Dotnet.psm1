@@ -3,7 +3,21 @@ function dev {
 }
 
 function vs {
-  & ./*.sln
+  $slnFiles = Get-ChildItem -Recurse -Depth 2 -Filter *.sln | Select-Object -ExpandProperty FullName
+
+  if ($slnFiles.Count -eq 0) {
+    Write-Host "No .sln files found.`r`n"
+  }
+  elseif ($slnFiles.Count -eq 1) {
+    Write-Host "Opening the only .sln file found: $slnFiles`r`n"
+    Start-Process $slnFiles
+  }
+  else {
+    $selectedIndex = Show-Menu -Items $slnFiles
+
+    Write-Host "Opening selected .sln file: $($slnFiles[$selectedIndex])`r`n"
+    Start-Process $slnFiles[$selectedIndex]
+  }
 }
 
 function vsc {
@@ -56,7 +70,7 @@ function Install-VisualStudioTemplates {
   & dotnet new -i Microsoft.DotNet.Web.Spa.ProjectTemplates.3.0
   & dotnet new -i Microsoft.AspNetCore.Blazor.Templates
   & dotnet new -i Microsoft.PowerShell.Standard.Module.Template
-    
+
   # More dotnet new templates:
   # https://github.com/dotnet/templating/wiki/Available-templates-for-dotnet-new
   # https://dotnetnew.azurewebsites.net/

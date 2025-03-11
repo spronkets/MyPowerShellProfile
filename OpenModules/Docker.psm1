@@ -24,3 +24,7 @@ function Install-DockerMongoDb {
   # no default user, set by $rootUser
   & docker run --name mongo --restart unless-stopped -it -e MONGO_INITDB_ROOT_USERNAME=$rootUser -e MONGO_INITDB_ROOT_PASSWORD=$rootPassword --net localnet --ip 172.18.0.25 -p 27017:27017 -d mongo:latest
 }
+
+function Install-Kafka {
+  & docker run --name=kafka --restart unless-stopped --net localnet --ip 172.18.0.26 -p 9092:9092 -d apache/kafka
+}
