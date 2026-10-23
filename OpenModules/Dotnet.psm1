@@ -1,43 +1,84 @@
 function dev {
-  & Set-Location "C:\dev\"
+  if (Test-Path 'D:\dev\' -PathType Container) {
+    Set-Location 'D:\dev\' -ErrorAction Stop
+  }
+  elseif (Test-Path 'C:\dev\' -PathType Container) {
+    Set-Location 'C:\dev\' -ErrorAction Stop
+  }
+  else {
+    throw 'Neither D:\dev\ nor C:\dev\ exists.'
+  }
 }
 
 function vs {
-  $slnFiles = Get-ChildItem -Recurse -Depth 2 -Filter *.sln | Select-Object -ExpandProperty FullName
+  $solutions = @(Get-ChildItem -File -Recurse -Depth 2 -ErrorAction Stop |
+    Where-Object { $_.Extension -in '.sln', '.slnx' })
 
-  if ($slnFiles.Count -eq 0) {
-    Write-Host "No .sln files found.`r`n"
+  if ($solutions.Count -eq 0) {
+    Write-Host 'No .sln or .slnx files found.'
+    return
   }
-  elseif ($slnFiles.Count -eq 1) {
-    Write-Host "Opening the only .sln file found: $slnFiles`r`n"
-    Start-Process $slnFiles
+
+  $solution = if ($solutions.Count -eq 1) {
+    $solutions[0]
   }
   else {
-    $selectedIndex = Show-Menu -Items $slnFiles
-
-    Write-Host "Opening selected .sln file: $($slnFiles[$selectedIndex])`r`n"
-    Start-Process $slnFiles[$selectedIndex]
+    $selectedIndex = Show-Menu -Items $solutions.FullName
+    $solutions[$selectedIndex]
   }
+
+  Write-Host "Opening solution: $($solution.FullName)"
+  Start-Process -FilePath $solution.FullName -ErrorAction Stop
 }
 
 function vsc {
-  & code .
+  & code . @args
 }
 
-function dt {
+function dd {
   Get-Date -Format "yyyyMMddHHmmss"
 }
 
+function dt {
+  & dotnet test @args
+}
+
 function clean {
-  Get-ChildItem .\ -include bin, obj -Recurse | ForEach-Object ($_) { remove-item $_.fullname -Force -Recurse }
+  [CmdletBinding(SupportsShouldProcess)]
+  param ()
+
+  $findArtifactDirectories = {
+    param ([string]$Path, [bool]$IsRoot)
+
+    foreach ($directory in Get-ChildItem -LiteralPath $Path -Directory -Force -ErrorAction Stop) {
+      if ($directory.Attributes -band [System.IO.FileAttributes]::ReparsePoint) {
+        continue
+      }
+
+      if ($directory.Name -in 'bin', 'obj' -or
+        ($IsRoot -and $directory.Name -in 'artifacts', 'TestResults')) {
+        $directory
+      }
+      else {
+        & $findArtifactDirectories $directory.FullName $false
+      }
+    }
+  }
+
+  $directories = @(& $findArtifactDirectories (Get-Location).Path $true)
+  foreach ($directory in $directories) {
+    if ($PSCmdlet.ShouldProcess($directory.FullName, 'Remove build artifacts')) {
+      Remove-Item -LiteralPath $directory.FullName -Force -Recurse -ErrorAction Stop
+    }
+  }
 }
 
 function dr {
-  dotnet restore
+  dotnet restore @args
 }
 
 function drn {
-  dotnet restore --no-cache
+  dotnet restore --no-cache @args
 }
 
 function Invoke-MsBuildForProject([string]$projectPath, [string]$config = "Debug") {
@@ -58,22 +99,6 @@ function Stop-MsBuildProcesses {
   Write-Host "Engaging the enemy..." -NoNewline -ForegroundColor White
   Stop-Process -processname msbuild -ErrorAction SilentlyContinue
   Write-Host " Hostiles eliminated!" -ForegroundColor Green
-}
-
-function Install-VisualStudioTemplates {
-  & dotnet new -i Microsoft.Azure.WebJobs.ProjectTemplates
-  & dotnet new -i Microsoft.Azure.WebJobs.ItemTemplates
-  & dotnet new -i Microsoft.DotNet.Web.ProjectTemplates.2.2
-  & dotnet new -i Microsoft.DotNet.Web.ProjectTemplates.3.0
-  & dotnet new -i Microsoft.AspNetCore.SpaTemplates
-  & dotnet new -i Microsoft.DotNet.Web.Spa.ProjectTemplates.2.2
-  & dotnet new -i Microsoft.DotNet.Web.Spa.ProjectTemplates.3.0
-  & dotnet new -i Microsoft.AspNetCore.Blazor.Templates
-  & dotnet new -i Microsoft.PowerShell.Standard.Module.Template
-
-  # More dotnet new templates:
-  # https://github.com/dotnet/templating/wiki/Available-templates-for-dotnet-new
-  # https://dotnetnew.azurewebsites.net/
 }
 
 function Stop-DotnetWebAppPool([string]$appPoolName) {

@@ -1,11 +1,24 @@
 Set-Alias find 'C:/Program Files/git/usr/bin/find.exe'
 
 # Posh-Git - https://github.com/dahlbyk/posh-git
+function Install-PoshGit {
+  if (Get-Module -ListAvailable posh-git) {
+    Update-Module posh-git
+  }
+  else {
+    Install-Module posh-git
+  }
+}
+
+if (-not (Get-Module -ListAvailable posh-git)) {
+  Install-PoshGit
+}
+
 Import-Module posh-git
 
 # Git Extensions - https://github.com/gitextensions/gitextensions
 function gite {
-  & 'C:/Program Files (x86)/GitExtensions/GitExtensions.exe' 
+  & 'C:/Program Files (x86)/GitExtensions/GitExtensions.exe'
 }
 
 # Helper Functions
@@ -69,7 +82,7 @@ function pull {
     [alias("b")]
     [string] $branchName
   )
-	
+
   if (![string]::IsNullOrEmpty($branchName)) {
     & git-merge $branchName
   }
@@ -98,7 +111,7 @@ function pull-all {
       }
     }
   }
-    
+
   Pop-Location
 }
 
@@ -115,7 +128,7 @@ function branch {
     [alias("b")]
     [string] $branchName
   )
-	
+
   if ($branchName.StartsWith("b/")) {
     $branchName = "bugfix/$($branchName.Remove(0,2))"
   }
@@ -128,7 +141,7 @@ function branch {
   elseif ($branchName.StartsWith("h/")) {
     $branchName = "hotfix/$($branchName.Remove(0,2))"
   }
-    
+
   & git checkout -b $branchName
   Write-Host "& git checkout -b $branchName"
 }
@@ -160,7 +173,7 @@ function push {
 
   if (![string]::IsNullOrEmpty($message)) {
     & git add -A
-        
+
     if ($allowConfigs -ne $true) {
       & git reset *.json
       & git reset *.config
@@ -169,6 +182,6 @@ function push {
     & git commit -m $message
     & git commit --amend -m $message
   }
-    
+
   & git push --set-upstream origin $branchName
 }
